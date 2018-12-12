@@ -8,10 +8,17 @@ class StatutoryInstrumentsController < ApplicationController
   }.freeze
 
   def index
-    @statutory_instruments = FilterHelper.filter(@api_request, 'StatutoryInstrumentPaper')
+    @statutory_instruments, blank_nodes = FilterHelper.filter(@api_request, 'StatutoryInstrumentPaper', ::Grom::Node::BLANK)
+    @count = blank_nodes.select { |node| node.respond_to?(:count) }
     list_components = LaidThingListComponentsFactory.sort_and_build_components(statutory_instruments: @statutory_instruments)
 
     heading = ComponentSerializer::Heading1ComponentSerializer.new(heading: I18n.t('statutory_instruments.index.title'))
+
+    pagination_hash = {
+      start_index:   params[:start_index],
+      count:         params[:count],
+      results_total: @count
+    }
 
     serializer = PageSerializer::ListPageSerializer.new(request: request, heading_component: heading, list_components: list_components, data_alternates: @alternates)
 

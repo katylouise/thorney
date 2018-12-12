@@ -6,10 +6,11 @@ module PageSerializer
     # @param [ComponentSerializer::Heading1ComponentSerializer] heading_component a heading object used for heading information
     # @param [Array<Hash>] list_components an array of components to be passed into the list
     # @param [Array<Hash>] data_alternates array containing the href and type of the alternative data url
-    def initialize(request: nil, heading_component: nil, list_components: nil, data_alternates: nil)
+    def initialize(request: nil, heading_component: nil, list_components: nil, data_alternates: nil, pagination_hash: nil)
       @heading_component = heading_component
       @list_components = list_components
       @data_alternates = data_alternates
+      @pagination_hash = pagination_hash
 
       super(request: request, data_alternates: data_alternates)
     end
@@ -24,6 +25,7 @@ module PageSerializer
       [].tap do |content|
         content << ComponentSerializer::SectionComponentSerializer.new(components: section_primary_components, type: 'primary', content_flag: true).to_h
         content << ComponentSerializer::SectionComponentSerializer.new(components: section_components, type: 'section').to_h
+        content << ComponentSerializer::PaginationComponentSerializer.new(pagination_hash: @pagination_hash).navigation_section_components if pagination
       end
     end
 
