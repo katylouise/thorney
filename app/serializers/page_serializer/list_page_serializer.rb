@@ -25,7 +25,7 @@ module PageSerializer
       [].tap do |content|
         content << ComponentSerializer::SectionComponentSerializer.new(components: section_primary_components, type: 'primary', content_flag: true).to_h
         content << ComponentSerializer::SectionComponentSerializer.new(components: section_components, type: 'section').to_h
-        content << ComponentSerializer::PaginationComponentSerializer.new(pagination_hash: @pagination_hash).navigation_section_components if pagination
+        content << ComponentSerializer::PaginationComponentSerializer.new(pagination_hash: @pagination_hash).navigation_section_components if @pagination_hash && @pagination_hash[:results_total] > 10
       end
     end
 

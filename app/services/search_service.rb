@@ -4,14 +4,14 @@ class SearchService < ApplicationController
 
   def initialize(app_insights_request_id, search_path, params)
     @app_insights_request_id = app_insights_request_id
-    @search_path = search_path
+    @search_path             = search_path
 
     @query_parameter = params[:q]
     @sanitised_query = SearchHelper.sanitize_query(query_parameter)
-    @escaped_query = CGI.escape(sanitised_query)[0, 2048]
+    @escaped_query   = CGI.escape(sanitised_query)[0, 2048]
 
     @start_index = open_search_param(:start_index, params)
-    @count = open_search_param(:count, params)
+    @count       = open_search_param(:count, params)
   end
 
   def flash_message
@@ -40,7 +40,7 @@ class SearchService < ApplicationController
       start_index:   start_index,
       count:         count,
       results_total: total_results,
-      search_path:   search_path,
+      path:          search_path,
       query:         escaped_query
     }
   end
@@ -63,11 +63,11 @@ class SearchService < ApplicationController
   #
   # @example No value passed in
   #   #http://localhost:3000/search?q=test
-  #   open_search_param(:start_index, params) #=> 0
+  #   open_search_param(:start_index, params) #=> 1
   #
   # @example Blank value passed in
   #   #http://localhost:3000/search?q=test&start_index=
-  #   open_search_param(:start_index, params) #=> 0
+  #   open_search_param(:start_index, params) #=> 1
   #
   # @example User value passed in
   #   #http://localhost:3000/search?q=test&start_index=11
@@ -75,7 +75,7 @@ class SearchService < ApplicationController
   #
   # @example User non-integer value passed in
   #   #http://localhost:3000/search?q=test&start_index=foo
-  #   open_search_param(:start_index, params) #=> 0
+  #   open_search_param(:start_index, params) #=> 0  This is wrong - need to check for non-integer value.
   #
   # @param [Symbol] symbol The key you're looking for.
   # @param [Hash] params The params hash from the controller.

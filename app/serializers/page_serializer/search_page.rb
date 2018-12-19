@@ -12,7 +12,7 @@ module PageSerializer
       @opensearch_description_url = opensearch_description_url
       @query = query
       @results = results
-      @pagination_helper = PaginationHelper.new(pagination_hash) if pagination_hash
+      @pagination_helper = ComponentSerializer::PaginationComponentSerializer.new(pagination_hash: pagination_hash) if pagination_hash
       @flash_message = flash_message
 
       super(request: request, data_alternates: nil)

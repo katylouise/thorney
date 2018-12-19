@@ -1,10 +1,11 @@
 module ComponentSerializer
   class PaginationComponentSerializer
-    def initialize(pagination_hash, page_range_helper = PageRangeHelper)
-      @start_index   = pagination_hash[:start_index]
-      @count         = pagination_hash[:count]
+    def initialize(pagination_hash:, page_range_helper: PageRangeHelper)
+      @start_index   = pagination_hash[:start_index].to_i
+      @count         = pagination_hash[:count].to_i
       @results_total = pagination_hash[:results_total]
-      @page_path   = pagination_hash[:page_path]
+      @path     = pagination_hash[:path]
+      @query = pagination_hash[:query] if pagination_hash[:query]
 
       @page_range_helper = page_range_helper.new(self)
     end
@@ -77,8 +78,11 @@ module ComponentSerializer
     end
 
     def create_page_url(start_index)
-      "#{page_path}?count=#{@count}&start_index=#{start_index}"
+      if @query
+        "#{@path}?count=#{@count}&q=#{@query}&start_index=#{start_index}"
+      else
+        "#{@path}?count=#{@count}&start_index=#{start_index}"
+      end
     end
   end
-
 end
