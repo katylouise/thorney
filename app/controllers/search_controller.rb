@@ -6,14 +6,15 @@ class SearchController < ApplicationController
     search_service.fetch_description
 
     begin
-      serialiser = PageSerializer::SearchPage::ResultsPageSerializer.new(request: request, query: search_service.sanitised_query, results: search_service.results, pagination_hash: search_service.pagination_hash)
+      pagination_hash = PaginationHelper.generate_hash(params: params, results_total: search_service.total_results, path: search_path, query: search_service.sanitised_query)
+      serializer = PageSerializer::SearchPage::ResultsPageSerializer.new(request: request, query: search_service.sanitised_query, results: search_service.results, pagination_hash: pagination_hash)
 
-      return render_page(serialiser)
+      return render_page(serializer)
     rescue Parliament::ServerError => e
       logger.warn "Server error caught from search request: #{e.message}"
-      serialiser = PageSerializer::SearchPage::ResultsPageSerializer.new(request: request, query: search_service.sanitised_query)
+      serializer = PageSerializer::SearchPage::ResultsPageSerializer.new(request: request, query: search_service.sanitised_query)
 
-      return render_page(serialiser)
+      return render_page(serializer)
     end
   end
 

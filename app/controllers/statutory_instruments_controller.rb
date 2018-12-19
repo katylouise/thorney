@@ -28,7 +28,7 @@ class StatutoryInstrumentsController < ApplicationController
 
     heading = ComponentSerializer::Heading1ComponentSerializer.new(heading: I18n.t('statutory_instruments.index.title'))
 
-    PaginationHelper.generate_hash(params: params, results_total: @total_results, path: request.path)
+    pagination_hash = PaginationHelper.generate_hash(params: params, results_total: @total_results, path: request.path)
 
     serializer = PageSerializer::ListPageSerializer.new(request: request, heading_component: heading, list_components: list_components, data_alternates: @alternates, pagination_hash: pagination_hash)
 

@@ -1,6 +1,6 @@
 class SearchService < ApplicationController
   # This class handles all the parameters required for the SearchController and subclasses of PageSerializer::SearchPage
-  attr_reader :app_insights_request_id, :search_path, :sanitised_query, :escaped_query, :start_index, :count
+  attr_reader :app_insights_request_id, :search_path, :sanitised_query, :escaped_query
 
   def initialize(app_insights_request_id, search_path, params)
     @app_insights_request_id = app_insights_request_id
@@ -9,9 +9,6 @@ class SearchService < ApplicationController
     @query_parameter = params[:q]
     @sanitised_query = SearchHelper.sanitize_query(query_parameter)
     @escaped_query   = CGI.escape(sanitised_query)[0, 2048]
-
-    @start_index = open_search_param(:start_index, params)
-    @count       = open_search_param(:count, params)
   end
 
   def flash_message
@@ -35,16 +32,6 @@ class SearchService < ApplicationController
     results.totalResults
   end
 
-  def pagination_hash
-    {
-      start_index:   start_index,
-      count:         count,
-      results_total: total_results,
-      path:          search_path,
-      query:         escaped_query
-    }
-  end
-
   private
 
   attr_reader :query_parameter
@@ -56,33 +43,5 @@ class SearchService < ApplicationController
 
     Parliament::Request::OpenSearchRequest.new(headers: headers,
                                                builder: Parliament::Builder::OpenSearchResponseBuilder)
-  end
-
-  # Return the OpenSearch parameter for a given key.
-  # Either uses a value passed in by a user, or returns the default OpenSearch value.
-  #
-  # @example No value passed in
-  #   #http://localhost:3000/search?q=test
-  #   open_search_param(:start_index, params) #=> 1
-  #
-  # @example Blank value passed in
-  #   #http://localhost:3000/search?q=test&start_index=
-  #   open_search_param(:start_index, params) #=> 1
-  #
-  # @example User value passed in
-  #   #http://localhost:3000/search?q=test&start_index=11
-  #   open_search_param(:start_index, params) #=> 11
-  #
-  # @example User non-integer value passed in
-  #   #http://localhost:3000/search?q=test&start_index=foo
-  #   open_search_param(:start_index, params) #=> 0  This is wrong - need to check for non-integer value.
-  #
-  # @param [Symbol] symbol The key you're looking for.
-  # @param [Hash] params The params hash from the controller.
-  # @return [Integer]
-  def open_search_param(symbol, params)
-    value = params.fetch(symbol, '').empty? ? nil : params[symbol].to_i # Fetch the user's value
-
-    value || Parliament::Request::OpenSearchRequest.open_search_parameters[symbol] # Or the default for OpenSearch
   end
 end
