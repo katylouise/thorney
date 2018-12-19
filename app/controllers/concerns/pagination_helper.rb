@@ -24,7 +24,7 @@ module PaginationHelper
     end
 
     def convert_to_integer(value)
-      value.to_i.to_s == value ? value : nil
+      value.to_i.to_s == value ? value.to_i : nil
     end
   end
 end

@@ -1,8 +1,8 @@
 module ComponentSerializer
   class PaginationComponentSerializer
     def initialize(pagination_hash:, page_range_helper: PageRangeHelper)
-      @start_index   = pagination_hash[:start_index].to_i
-      @count         = pagination_hash[:count].to_i
+      @start_index   = pagination_hash[:start_index]
+      @count         = pagination_hash[:count]
       @results_total = pagination_hash[:results_total]
       @path     = pagination_hash[:path]
       @query = pagination_hash[:query] if pagination_hash[:query]
