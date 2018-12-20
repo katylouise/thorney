@@ -53,7 +53,14 @@ RSpec.describe SearchController, vcr: true do
         end
 
         it 'calls the serializer with the correct arguments' do
-          expect(PageSerializer::SearchPage::ResultsPageSerializer).to have_received(:new).with(request: request, query: 'banana', results: [1, 2, 3], pagination_hash: 'pagination_hash')
+          pagination_hash = {
+            count: 10,
+            path: '/search',
+            query: 'banana',
+            results_total: 4000,
+            start_index: 1
+          }
+          expect(PageSerializer::SearchPage::ResultsPageSerializer).to have_received(:new).with(request: request, query: 'banana', results: [1, 2, 3], pagination_hash: pagination_hash)
         end
       end
 
@@ -75,7 +82,7 @@ RSpec.describe SearchController, vcr: true do
               start_index: controller.send(:search_service).start_index,
               count: controller.send(:search_service).count,
               results_total: controller.send(:search_service).total_results,
-              search_path: '/search',
+              path: '/search',
               query: 'fdsfsd'
           }
 
