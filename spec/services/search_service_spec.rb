@@ -33,27 +33,6 @@ RSpec.describe SearchService, vcr: true do
       expect(subject.escaped_query).to eq 'hello+there'
     end
 
-    it '#start_index' do
-      expect(subject.start_index).to eq 21
-    end
-
-    it '#count' do
-      expect(subject.count).to eq 10
-    end
-
-    it '#pagination_hash' do
-      allow(subject).to receive(:total_results) { 100 }
-      expected_hash = {
-          start_index: 21,
-          count: 10,
-          results_total: 100,
-          search_path: '/search',
-          query: 'banana'
-      }
-
-      expect(subject.pagination_hash).to eq expected_hash
-    end
-
     context 'fetch_description' do
       it 'successful fetching' do
         subject.fetch_description
@@ -65,40 +44,6 @@ RSpec.describe SearchService, vcr: true do
         allow(Parliament::Request::OpenSearchRequest).to receive(:configure_description_url) { raise raise Errno::ECONNREFUSED }
 
         expect{ subject.fetch_description }.to raise_error(StandardError, "There was an error getting the description file from OPENSEARCH_DESCRIPTION_URL environment variable value: '#{ENV['OPENSEARCH_DESCRIPTION_URL']}' - Connection refused")
-      end
-    end
-
-    context '#open_search_param' do
-      before(:each) do
-        allow(Parliament::Request::OpenSearchRequest).to receive(:open_search_parameters) { { start_index: 0 } }
-      end
-
-      it 'start_index defaults to OpenSearch default if it doesn\'t exist' do
-        params = {}
-        subject = described_class.new(123, '/search', params)
-
-        expect(subject.start_index).to eq 0
-      end
-
-      it 'start_index defaults to OpenSearch default if it is an empty string' do
-        params = { start_index: '' }
-        subject = described_class.new(123, '/search', params)
-
-        expect(subject.start_index).to eq 0
-      end
-
-      it 'start_index defaults to OpenSearch default if it is a non-integer value' do
-        params = { start_index: 'foo' }
-        subject = described_class.new(123, '/search', params)
-
-        expect(subject.start_index).to eq 0
-      end
-
-      it 'start_index is valid value' do
-        params = { start_index: '5' }
-        subject = described_class.new(123, '/search', params)
-
-        expect(subject.start_index).to eq 5
       end
     end
   end

@@ -15,13 +15,13 @@ module PaginationHelper
       }
     end
 
-    private
-
     def normalize_value(symbol, params)
       value = params.fetch(symbol, '').empty? ? nil : convert_to_integer(params[symbol])
 
       value || DEFAULTS[symbol]
     end
+
+    private
 
     def convert_to_integer(value)
       value.to_i.to_s == value ? value.to_i : nil

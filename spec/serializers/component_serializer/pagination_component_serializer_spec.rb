@@ -4,6 +4,7 @@ RSpec.describe ComponentSerializer::PaginationComponentSerializer do
   let(:page_range_helper_instance) { double('page_range_helper_instance', active_tile_position: 0, last_page: 3, page_range: [1, 2, 3]) }
   let(:page_range_helper) { double('page_range_helper', new: page_range_helper_instance) }
   let(:pagination_hash) {{ start_index: 10, count: 123, results_total: 321, path: 'some_url', query: 'hello' }}
+  let(:pagination_hash_no_query) {{ start_index: 10, count: 123, results_total: 321, path: 'some_url' }}
   subject { described_class.new(pagination_hash: pagination_hash, page_range_helper: page_range_helper) }
 
   it '#current_page' do
@@ -33,6 +34,14 @@ RSpec.describe ComponentSerializer::PaginationComponentSerializer do
       expected = get_fixture('create_number_cards')
 
       expect(subject.navigation_section_components.to_yaml).to eq expected
+    end
+
+    it 'creates the correct hash with no query url' do
+      serializer = described_class.new(pagination_hash: pagination_hash_no_query, page_range_helper: page_range_helper)
+
+      expected = get_fixture('create_number_cards_no_query')
+
+      expect(serializer.navigation_section_components.to_yaml).to eq expected
     end
 
     it 'there are 6 pages in total' do

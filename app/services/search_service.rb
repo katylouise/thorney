@@ -1,6 +1,6 @@
 class SearchService < ApplicationController
   # This class handles all the parameters required for the SearchController and subclasses of PageSerializer::SearchPage
-  attr_reader :app_insights_request_id, :search_path, :sanitised_query, :escaped_query
+  attr_reader :app_insights_request_id, :search_path, :sanitised_query, :escaped_query, :start_index, :count
 
   def initialize(app_insights_request_id, search_path, params)
     @app_insights_request_id = app_insights_request_id
@@ -9,6 +9,8 @@ class SearchService < ApplicationController
     @query_parameter = params[:q]
     @sanitised_query = SearchHelper.sanitize_query(query_parameter)
     @escaped_query   = CGI.escape(sanitised_query)[0, 2048]
+    @start_index = PaginationHelper.normalize_value(:start_index, params)
+    @count = PaginationHelper.normalize_value(:count, params)
   end
 
   def flash_message
