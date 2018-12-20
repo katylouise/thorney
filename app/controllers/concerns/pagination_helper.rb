@@ -21,6 +21,10 @@ module PaginationHelper
       value || DEFAULTS[symbol]
     end
 
+    def default(key)
+      DEFAULTS[key]
+    end
+
     private
 
     def convert_to_integer(value)

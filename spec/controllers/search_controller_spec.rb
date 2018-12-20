@@ -31,6 +31,7 @@ RSpec.describe SearchController, vcr: true do
               query_nil_or_empty?: false,
               fetch_description: true,
               sanitised_query: 'banana',
+              escaped_query: 'banana',
               results: [1, 2, 3],
               count: 123,
               total_results: 4000,

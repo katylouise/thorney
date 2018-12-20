@@ -6,7 +6,7 @@ class SearchController < ApplicationController
     search_service.fetch_description
 
     begin
-      pagination_hash = PaginationHelper.generate_hash(params: params, results_total: search_service.total_results, path: search_path, query: search_service.sanitised_query)
+      pagination_hash = PaginationHelper.generate_hash(params: params, results_total: search_service.total_results, path: search_path, query: search_service.escaped_query)
       serializer = PageSerializer::SearchPage::ResultsPageSerializer.new(request: request, query: search_service.sanitised_query, results: search_service.results, pagination_hash: pagination_hash)
 
       return render_page(serializer)

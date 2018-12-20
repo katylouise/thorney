@@ -4,8 +4,8 @@ class StatutoryInstrumentsController < ApplicationController
 
   ROUTE_MAP = {
     index: proc do |params|
-      limit  = (params[:count] || 10).to_i
-      offset = (params[:start_index] || 1).to_i
+      limit  = (params[:count] || PaginationHelper.defaults(params[:count])).to_i
+      offset = (params[:start_index] || PaginationHelper.defaults(params[:start_index])).to_i
 
       if offset == 1
         ParliamentHelper.parliament_request.statutory_instrument_page_one.set_url_params({ limit: limit, offset: offset - 1 })
